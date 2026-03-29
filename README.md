@@ -1,8 +1,8 @@
 # This is a rewrite of ImGui lua bindings
 
 It is forked from [this repository](https://github.com/casssoft/imgui_lua_bindings), that
-initially used a perl script to parse `imgui.h`. Since it (unfortunately) does not work any 
-more with more recent versions of Dear Imgui, I adapted the code generator of 
+initially used a perl script to parse `imgui.h`. Since it (unfortunately) does not work any
+more with more recent versions of Dear Imgui, I adapted the code generator of
 [Graphite](https://github.com/BrunoLevy/GraphiteThree) and created a new backend for imgui/lua.
 It is moslty compatible with the original binding, but note that there is a couple of changes:
 - enum constants added to the global namespace instead of creating a namespace for each enum, which may
@@ -21,16 +21,16 @@ What follows is the README that came with the original bindings
 
 ImGui https://github.com/ocornut/imgui
 
-These bindings support a lot of common imgui operations except for initializing imgui. 
+These bindings support a lot of common imgui operations except for initializing imgui.
 
-This repo only deals with binding ImGui with lua and doesn't deal with setting up the ImGui impl files required to run ImGui, check out the ImGui repo for help with that. 
+This repo only deals with binding ImGui with lua and doesn't deal with setting up the ImGui impl files required to run ImGui, check out the ImGui repo for help with that.
 
 For LOVE bindings check out https://github.com/slages/love-imgui (uses these C++ bindings and does the rest of the work for you).
 
-Function support for dear imgui 1.60:
+Function support for dear imgui 1.92:
 
-    Normal Imgui functions:   Supported: 204 Unsupported: 117
-    Imgui DrawList functions: Supported: 36 Unsupported: 12
+    Normal Imgui functions:   Supported: 314 Unsupported: 61
+    Imgui DrawList functions: Supported: 52 Unsupported: 16
 
 
 ## How to call these imgui bindings from lua
@@ -94,7 +94,7 @@ imgui.SetNextWindowPos(100, 50)
 
 ## DrawList functions:
 
-All functions that operate on drawlists are called with the prefix DrawList
+~All functions that operate on drawlists are called with the prefix DrawList~
 
 Function definition in C++
 ```c++
@@ -103,12 +103,13 @@ Function definition in C++
 
 How to call function in lua
 ```lua
-imgui.DrawList_AddLine(
-  imgui.DrawList_AddLine(minX, minY, maxX, maxY, 0xFF0000FF, 2)
+imgui.AddLine(list, minX, minY, maxX, maxY, 0xFF0000FF, 2)
 ```
-Note you must specifiy the color in hex for now
-0x(ALPHA)(BLUE)(GREEN)(RED)
-0xFF0000FF = full opacity red
+where `list` is for instance obtained using `imgui.GetWindowDrawList(), imgui.GetBackgroundDrawList(), imgui.GetForegroundDrawList()`
+
+Note you must specifiy the color in hex:
+`0x(ALPHA)(BLUE)(GREEN)(RED)`
+`0xFF0000FF` = full opacity red
 
 
 ## Enums:
@@ -131,6 +132,18 @@ imgui.End()
 
 ## How to build:
 
+## How to initialize from your C++ code:
+```c++
+extern void LoadImGuiBindings(lua_State* L);
+extern void LoadImDrawListBindings(lua_State* L);
+...
+main() {
+  ...
+  lua_State* L = ...
+  LoadImGuiBindings(L);
+  LoadImDrawListBindings(L);
+}
+```
 
 ## License
 

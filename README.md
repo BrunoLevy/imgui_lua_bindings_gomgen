@@ -151,8 +151,12 @@ main() {
 ```
 
 ## How to re-generate `imgui_lua_bindings.cpp` and `imdrawlist_lua_bindings.cpp`
+You will need to do that if for instance you want bindings for a different version of dear imgui.
+The bindings are generated using `gomgen`, that is part of the Graphite software.
+
 1. get and compile Graphite [here](https://github.com/BrunoLevy/GraphiteThree/wiki#installing)
-2. generate bindings:
+2. add Graphite's binaries directory to your `PATH`
+3. generate bindings:
 ```
 gomgen -oimgui_lua_bindings.cpp -iimgui.h -sImGui -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS -lua
 gomgen -oimdrawlist_lua_bindings.cpp -iimgui.h -sImDrawList -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS -lua

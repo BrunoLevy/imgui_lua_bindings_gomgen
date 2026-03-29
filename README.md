@@ -160,6 +160,7 @@ The bindings are generated using `gomgen`, that is part of the Graphite software
 ```
 gomgen -oimgui_lua_bindings.cpp -iimgui.h -sImGui -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS -lua
 gomgen -oimdrawlist_lua_bindings.cpp -iimgui.h -sImDrawList -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS -lua
+4. make sure you take the latest version of `luawrap_runtime.h` from `GraphiteThree/src/bin/gomgen/`
 ```
 
 ## License

@@ -39,7 +39,7 @@ It mostly is the same as calling from C++ except for dealing with pointers and I
 
 Function definition in C++
 ```c++
-    IMGUI_API bool          RadioButton(const char* label, bool active);
+    IMGUI_API bool RadioButton(const char* label, bool active);
 ```
 How to call function in lua
 
@@ -55,7 +55,7 @@ back the new value.
 
 Function definition in C++
 ```c++
-    IMGUI_API void          ShowTestWindow(bool* opened = NULL);
+    IMGUI_API void ShowTestWindow(bool* opened = NULL);
 ```
 How to call function in lua
 ```lua
@@ -84,7 +84,7 @@ Those are arguments are expanded to separate variables instead of one object.
 
 Function definition in C++
 ```c+++
-    IMGUI_API void          SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond = 0);
+    IMGUI_API void SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond = 0);
 ```
 
 How to call function in lua
@@ -98,7 +98,7 @@ imgui.SetNextWindowPos(100, 50)
 
 Function definition in C++
 ```c++
-    IMGUI_API void  AddLine(const ImVec2& a, const ImVec2& b, ImU32 col, float thickness = 1.0f);
+    IMGUI_API void AddLine(const ImVec2& a, const ImVec2& b, ImU32 col, float thickness = 1.0f);
 ```
 
 How to call function in lua
@@ -131,6 +131,11 @@ imgui.End()
 ```
 
 ## How to build:
+```
+g++ -c imgui_lua_bindings.cpp
+g++ -c imdrawlist_lua_bindings.cpp
+```
+(supposing that `imgui.h` and `lua.h` are already in the include path)
 
 ## How to initialize from your C++ code:
 ```c++
@@ -143,6 +148,14 @@ main() {
   LoadImGuiBindings(L);
   LoadImDrawListBindings(L);
 }
+```
+
+## How to re-generate `imgui_lua_bindings.cpp` and `imdrawlist_lua_bindings.cpp`
+1. get and compile Graphite [here](https://github.com/BrunoLevy/GraphiteThree/wiki#installing)
+2. generate bindings:
+```
+gomgen -oimgui_lua_bindings.cpp -iimgui.h -sImGui -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS -lua
+gomgen -oimdrawlist_lua_bindings.cpp -iimgui.h -sImDrawList -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS -lua
 ```
 
 ## License

@@ -1,3 +1,22 @@
+# This is a rewrite of ImGui lua bindings
+
+It is forked from [this repository](https://github.com/casssoft/imgui_lua_bindings), that
+initially used a perl script to parse `imgui.h`. Since it (unfortunately) does not work any 
+more with more recent versions of Dear Imgui, I adapted the code generator of 
+[Graphite](https://github.com/BrunoLevy/GraphiteThree) and created a new backend for imgui/lua.
+It is moslty compatible with the original binding, but note that there is a couple of changes:
+- enum constants added to the global namespace instead of creating a namespace for each enum, which may
+  seem ugly, but then Lua code resembles C++ code more
+- there are two different files / initialization functions for ImGui
+  and ImDrawList, so that one can bind what's needed (and just what's
+  needed)
+- the initialization functions take a `lua_State*`
+- the ImDrawList bindings have the same name of their C++ counterparts
+  and take an `ImDrawList*` as the first parameter
+
+What follows is the README that came with the original bindings
+(updated to take into account the list of changes above).
+
 # These are imgui bindings for lua.
 
 ImGui https://github.com/ocornut/imgui
@@ -46,7 +65,7 @@ This can make some functions a bit weird. For example Begin.
 
 Function definition in C++
 ```c++
-    IMGUI_API bool          Begin(const char* name, bool* p_opened = NULL, ImGuiWindowFlags flags = 0);
+    IMGUI_API bool Begin(const char* name, bool* p_opened = NULL, ImGuiWindowFlags flags = 0);
 ```
 
 How to call function in lua (Note: optional arguments still work)
@@ -94,7 +113,9 @@ Note you must specifiy the color in hex for now
 
 ## Enums:
 
-Enums are exposed through a "constant" table. They're namespaced with "ImGui" stripped from the name.
+~Enums are exposed through a "constant" table. They're namespaced with "ImGui" stripped from the name.~
+Enum constants are added to the global namespace, using the same name as their C++ counterparts.
+
 
 ```c++
 ImGui::SetNextWindowSize(ImVec2(550,680), ImGuiSetCond_FirstUseEver);
@@ -103,35 +124,19 @@ ImGui::End()
 ```
 
 ```lua
-imgui.SetNextWindowSize(550,680, imgui.constant.SetCond.FirstUseEver)
-imgui.Begin("Demo", true, imgui.constant.WindowFlags.ShowBorders)
+imgui.SetNextWindowSize(550,680, ImGuiSetCond_FirstUseEver)
+imgui.Begin("Demo", true, ImGuiWindowFlags_ShowBorders)
 imgui.End()
 ```
 
 ## How to build:
 
-Generate iterator file (or use the one for 1.50 already in the repo)
-```
-./generate_imgui_bindings.pl <../imgui/imgui.h >imgui_iterator.inl
-```
 
-This creates a file with info about imgui functions from the imgui.h file.
+## License
 
-Then copy the macro definitions in imgui_lua_bindings.cpp and include imgui_iterator.inl in that the cpp file. This will generate static int impl_FunctionName(lua_State*L) {} functions for each imgui function. Bind these to lua functions and you're good to go. (Check out imgui_lua_bindings.cpp for a full example)
+This version: BSD 3 clauses
 
-The imgui_lua_bindings.cpp has two functions RunString and LoadImguiBindings
-
-To use the functions there first assign the global lState to a valid lua_State, then call LoadImguiBindings then run as many strings as you want.
-
-## What is ENABLE_IM_LUA_END_STACK?
-
-I made something to keep track of the imgui begin stack so that I could continue using
-imGui functions if an error ocurred in the lua script. If you don't care about that
-don't define ENABLE_IM_LUA_END_STACK. I'm using a std::deque of ints to store what the last
-begin calls were and then if the script errors I unwrap them with ends so that imgui won't
-complain when I render.
-
-## License?
+Original version:
 I don't feel like writing a license so here's it in laymans terms...
 
 You can use this code for whatever just don't redistribute the exact same source code and try to sell it, or claim that the source code was made by you.

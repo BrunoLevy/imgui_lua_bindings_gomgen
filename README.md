@@ -6,7 +6,7 @@ more with more recent versions of Dear Imgui, I adapted the code generator of
 [Graphite](https://github.com/BrunoLevy/GraphiteThree) and created a new backend for imgui/lua.
 It is moslty compatible with the original binding, but note that there is a couple of changes:
 - enum constants added to the global namespace instead of creating a namespace for each enum, which may
-  seem ugly, but then Lua code resembles C++ code more
+  seem ugly, but makes things easier (then Lua code resembles C++ code more)
 - there are two different files / initialization functions for ImGui
   and ImDrawList, so that one can bind what's needed (and just what's
   needed)
@@ -160,14 +160,15 @@ The bindings are generated using `gomgen`, that is part of the Graphite software
 ```
 gomgen -oimgui_lua_bindings.cpp -iimgui.h -sImGui -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS -lua
 gomgen -oimdrawlist_lua_bindings.cpp -iimgui.h -sImDrawList -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS -lua
-4. make sure you take the latest version of `luawrap_runtime.h` from `GraphiteThree/src/bin/gomgen/`
 ```
+4. make sure you take the latest version of `luawrap_runtime.h` from `GraphiteThree/src/bin/gomgen/`
 
 ## License
 
 This version: BSD 3 clauses
 
-Original version:
+License of the original version:
+
 I don't feel like writing a license so here's it in laymans terms...
 
 You can use this code for whatever just don't redistribute the exact same source code and try to sell it, or claim that the source code was made by you.

@@ -268,7 +268,7 @@ namespace LuaWrap {
 	}
     };
 
-    template <int DIM, class CTYPE, class LUATYPE=CTYPE>
+    template <unsigned int DIM, class CTYPE, class LUATYPE=CTYPE>
     class ArgArray : public ArgBase {
     public:
 	ArgArray(lua_State* L, int idx) {

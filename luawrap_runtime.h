@@ -76,8 +76,8 @@ namespace LuaWrap {
 	static constexpr lua_Integer default_value = 0;
 	static bool check(lua_State* L, int idx) {
 	    return
-		lua_isinteger(L,idx) ||
-		lua_isboolean(L,idx) ; // we tolerate false->0 true->1 conversion
+		lua_isnumber(L,idx) ||  // we tolerate float->int conversion ...
+		lua_isboolean(L,idx) ;  // ... and false->0 true->1 conversion
 	}
 	static lua_Integer get(lua_State* L, int idx) {
 	    return lua_tointeger(L, idx);
@@ -131,7 +131,6 @@ namespace LuaWrap {
 	static bool check(lua_State* L, int idx) {
 	    return lua_isboolean(L,idx) ||
 		   lua_isinteger(L,idx) ; // we tolerate int->bool conversions
-
 	}
 	static bool get(lua_State* L, int idx) {
 	    return lua_toboolean(L, idx);
@@ -266,6 +265,38 @@ namespace LuaWrap {
 	    } else {
 		state = INVALID;
 	    }
+	}
+    };
+
+    template <int DIM, class CTYPE, class LUATYPE=CTYPE>
+    class ArgArray : public ArgBase {
+    public:
+	ArgArray(lua_State* L, int idx) {
+	    get(L, idx);
+	}
+	void push(lua_State* L) {
+	    for(int i=0; i<DIM; ++i) {
+		LuaType<LUATYPE>::push(L,value[i]);
+	    }
+	}
+	CTYPE value[DIM];
+
+    protected:
+	void get(lua_State* L, int idx) {
+	    for(int i=0; i<DIM; ++i) {
+		if(lua_isnoneornil(L,i+idx)) {
+		    return;
+		}
+	    }
+	    for(int i=0; i<DIM; ++i) {
+		if(LuaType<LUATYPE>::check(L,i+idx)) {
+		    value[i] = CTYPE(LuaType<LUATYPE>::get(L,i+idx));
+		} else {
+		    state = INVALID;
+		    return;
+		}
+	    }
+	    state = SET;
 	}
     };
 
